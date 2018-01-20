@@ -1,4 +1,4 @@
-# swing1
+# template
 
 > A Vue.js project
 
