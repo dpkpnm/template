@@ -51,7 +51,7 @@ export default {
       if(this.animating) {
         this.cards[this.currentcard].position=(a.deltaX*1.5)+"px";
         this.cards[this.currentcard].opacity=1-Math.abs(a.deltaX/innerWidth);
-        this.cards[this.currentcard].rotate=a.deltaX/50;
+        this.cards[this.currentcard].rotate=a.deltaX/15;
       }
       if(a.isFinal && a.type=="panend") {
         var that =this;
@@ -78,6 +78,7 @@ export default {
       }
     },
     nextCard() {
+      debugger;
       this.currentcard--;
       if(this.currentcard < 0) {
         this.getNextData();
