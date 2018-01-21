@@ -2,6 +2,7 @@
   <div id="app">
     <a v-touch:pan="callback"></a>
     <h1>కార్టూన్లు</h1>
+    <div>{{lastcard}}/{{cards[currentcard].name}}</div>
     <div class=wrapper>
     <div class="card loading"><div>Loading</div></div>
     <div :class="{card:true,clear:card.clear,favorite:card.favorite}" :style="{transform:'translateX(' + card.position +') rotate(' + card.rotate + 'deg)', 'transition-duration':card.duration+'s'}"  v-for="card in cards">
@@ -86,7 +87,11 @@ export default {
       }
     },
     getNextData() {
-      var ref = db.ref("cartoons").orderByChild("name").limitToFirst(10).startAt(this.lastcard);
+      var ref="";
+      if(this.lastcard=="")
+        ref = db.ref("cartoons").orderByChild("name").limitToFirst(5);
+      else
+        ref = db.ref("cartoons").startAt(this.lastcard).orderByChild("name").limitToFirst(5);
       var that = this;
       this.cards=[];
       ref.once("value", function(data){
@@ -96,7 +101,9 @@ export default {
         })
         that.currentcard = that.cards.length-1;
         that.loading=false;
+        // debugger;
         that.lastcard = that.cards[that.currentcard].name;
+        // console.log(that.lastcard);
 
         // console.log( _(data.val()).map().value());
       })
