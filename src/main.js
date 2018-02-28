@@ -2,11 +2,10 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-import Vue2Touch from 'vue2-touch'
+import VDragged from 'v-dragged'
 import { store } from './store.js'
 
-Vue.use(Vue2Touch)
-
+Vue.use(VDragged)
 
 Vue.config.productionTip = false
 

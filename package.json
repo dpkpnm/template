@@ -10,11 +10,14 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "draggable-vue-directive": "^1.0.3",
     "firebase": "^4.9.0",
     "lodash": "^4.17.4",
+    "v-dragged": "0.0.5",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vue2-touch": "^1.0.5",
+    "vue2-touch-events": "^1.0.0",
     "vuex": "^3.0.1",
     "vuexfire": "^2.3.0"
   },

@@ -3,14 +3,14 @@
   <div class=arrowtop @click="changeGradient(-1)"></div>
 		<div id=main>
 				<transition name='bounce' :duration="{ enter: 500, leave: 0 }">
-					<div key=question id=question v-if="!answer">
-						<div @click="answer=true">$</div>
-						<transition key=fade name="fade" :duration="{enter:1000, leave:0}">
-							<div class="center small" v-if="title">{{title}}</div>
-						</transition>
+					<div key=question id=question v-if="!answer" class=question v-dragged="onDragged" :style="{transform:'translate('+ el.x +'px,'+el.y+'px) scale(' + el.scale + ')'}">
+						<div>
+							<svg x="0px" y="0px" :viewBox="record.viewbox" xml:space="preserve"><path fill="white" :d="record.path"/></svg>
+						</div>
+						<div class="center small" v-if="title">{{record.title}}</div>
 					</div>
 					<div key=answer id=answer v-else>
-						<div class="circle white" v-if="image" @click="changeGradient(1)">$</div>
+						<div class="circle white" v-if="image" @click="changeGradient(1)">{{record.img}}</div>
 					</div>
 				</transition>
 		</div>
@@ -18,28 +18,27 @@
 	</div>
 </template>
 
-
-
 <script>
-import {db} from './firebaseconfig';
-import _ from 'lodash';
-
-
-export default {
-  name: 'App',
-  data: function () {
-    return {
-   	 message: 'Hello Vue!',
-	    currentGradient: 1,
-	    image:true,
-	    title:"title",
-	    answer: false
-
-    }
-  },
-  computed: {
+	import {db} from './firebaseconfig';
+	import _ from 'lodash';
+	export default {
+	  name: 'App',
+	  data: function () {
+	    return {
+	    	words: [{img:"అ",path:"M428.201,198.99c-5.866-10.19-15.641-17.679-27.641-20.099v-34.343c0-26.102-21.31-47.686-47.044-48.115 c-0.268-0.004-0.376-0.007-0.643-0.007c-26.179,0-47.313,21.299-47.313,47.478v27.487c0,3.674-3.326,6.664-7,6.664 c-3.674,0-7-2.989-7-6.664v-26.843c0-26.102-20.952-47.686-46.685-48.115c-0.268-0.004-0.055-0.007-0.323-0.007 c-26.179,0-46.992,21.299-46.992,47.478v42.48c0,13.293-11.721,21.521-22.123,21.522c-3.668,0-8.944-0.996-13.961-5.744 c-12.939-12.243-19.916-28.792-19.916-46.598V98.079c0-23.875-20.218-43.296-44.094-43.296H39.148C17.562,54.782,0,72.196,0,93.782 s17.562,39,39.148,39h24.413v22.782c0,37.573,13.807,72.993,40.053,99.738c12.425,12.661,26.947,22.716,41.947,29.884v59.731 c0,14.41,10,26.64,23,30.741v24.791c0,4.6,3.9,8.329,8.5,8.329c4.6,0,8.5-3.73,8.5-8.329v-24.115 c7-1.533,12.469-5.208,16.867-10.271c3.991,4.59,10.133,8.036,15.133,9.78v24.606c0,4.6,3.9,8.329,8.5,8.329 c4.6,0,8.5-3.73,8.5-8.329v-24.33c14-3.564,24-16.207,24-31.202v-46.136h41v46.135c0,13.148,8,24.475,19,29.474v26.058 c0,4.6,3.9,8.329,8.5,8.329c4.6,0,8.5-3.73,8.5-8.329v-23.547c8-0.927,14.422-4.736,19.501-10.355 c3.977,4.399,8.499,7.688,14.499,9.356v24.546c0,4.6,3.9,8.329,8.5,8.329c4.6,0,8.5-3.73,8.5-8.329v-24.331 c14-3.569,25-16.21,25-31.2v-53.911c14-8.516,22-23.762,22-40.207c0,0-0.199-32.792-0.249-33.631 c7.864,3.25,13.249,10.998,13.249,20.022v45.591h17v-45.591C463.561,217.008,448.023,200.432,428.201,198.99z M67.5,92.551 c0,2.973-2.418,5.391-5.391,5.391c-2.973,0-5.391-2.418-5.391-5.391s2.419-5.391,5.391-5.391C65.081,87.159,67.5,89.578,67.5,92.551 z M193.561,344.917c0,8.575-7.003,15.551-15.5,15.551s-15.5-6.976-15.5-15.551v-53.374c10,3.085,21,5.087,31,5.952V344.917z M347.561,344.917c0,8.575-7.503,15.551-16,15.551s-16-6.976-16-15.551v-46.135h32V344.917z M417.561,250.8 c0,11.829-7.193,22.7-17.93,27.697l-5.07,2.241v64.18c0,8.558-7.217,15.463-15.734,15.482c-8.479-0.02-15.457-6.618-15.457-15.618 h0.191v-55.114v-7.886h-122v63.136c0,8.562-6.524,15.537-15.024,15.549c-8.484-0.012-14.976-6.987-14.976-15.549V281.47 l-8.574-0.165c-33.254-0.672-64.324-14.05-87.504-37.671c-23.17-23.611-35.922-54.888-35.922-88.07v-38.782H39.148 c-12.401,0-22.489-10.099-22.489-22.5s10.089-22.5,22.489-22.5h16.607c-9.071,3-15.697,10.991-15.697,20.941 c0,12.158,9.892,21.964,22.05,21.964c12.158,0,22.05-9.763,22.05-21.921c0-9.95-6.627-17.984-15.697-20.984h29.006 c14.69,0,27.094,11.606,27.094,26.296v57.486c0,22.431,8.75,43.277,25.049,58.698c7.021,6.643,16.65,10.302,26.112,10.302 c21.112-0.001,38.839-17.129,38.839-38.181v-42.48c0-16.993,13.161-30.819,30.155-30.819c0.175,0,0.367,0.002,0.543,0.005 c16.702,0.278,30.302,14.39,30.302,31.458v26.843c0,12.86,10.14,23.322,23,23.322c12.86,0,23-10.462,23-23.322v-27.487 c0-17.169,14.283-31.135,31.53-30.814c16.702,0.278,30.47,14.39,30.47,31.458v50.235h7.922c13.779,0,26.078,11.14,26.078,24.919 V250.8z",viewbox:"0 0 463.561 463.561", title:"అల"},{img:"ఆ",path:"M284.226,0.167c-0.405-0.036-0.761,0.015-1.147,0.01c-0.025,0-0.051-0.01-0.076-0.01 C168.636-3.796,48.425,62.669,58.814,191.272c0.041,0.521,0.17,0.982,0.264,1.467c-0.15,1.331-0.15,2.724,0.173,4.238 c6.271,29.348-3.354,55.149-27.444,73.141c-1.104,0.822-1.95,1.767-2.689,2.752c-2.435,1.6-4.357,4.053-5.393,7.023 c-4.519,12.969-1.086,26.172,9.278,35.195c1.708,1.482,3.687,2.493,5.746,3.036c6.69,3.697,13.685,6.154,20.949,7.871 c-1.493,8.054-0.759,16.198,3.12,23.866c-7.243,14.117-2.435,29.691,11.865,38.191c0.807,0.482,1.612,0.843,2.404,1.122 c2.427,2.89,2.661,7.531,1.767,11.995c-0.277,1.365-0.312,2.731-0.208,4.062c-0.063,1.209-0.025,2.438,0.208,3.677 c3.77,19.773,20.66,30.691,39.986,31.042c1.041,0.021,2.001-0.087,2.907-0.27c0.894,0.041,1.831-0.01,2.798-0.167 c31.037-5.033,66.375-2.22,78.033,31.869c2.331,6.81,8.559,9.12,14.14,8.221c1.881,1.412,4.357,2.214,7.478,1.996 c56.241-3.931,111.987-12.101,167.83-19.596c1.976-0.265,3.687-0.904,5.164-1.809c6.77-2.112,12.238-9.688,7.866-17.854 c-37.313-69.568,38.328-145.464,52.684-212.295c0.315-1.445,0.32-2.783,0.193-4.058C473.106,116.222,397.155,10.338,284.226,0.167 z M434.112,221.092c-0.147,1.016-0.167,1.988-0.111,2.922c-15.595,71.509-83.984,140.64-56.909,215.515 c-50.855,6.906-101.676,13.995-152.903,17.58c-0.363,0.025-0.68,0.122-1.028,0.178c-18.309-40.751-60.91-48.058-103.06-41.675 c-0.421-0.051-0.812-0.143-1.264-0.152c-4.799-0.092-7.305-0.589-11.05-2.874c0.328,0.102-1.924-1.696-1.904-1.666 c-0.322-0.325-0.523-0.518-0.67-0.645c0-0.097-0.129-0.386-0.602-1.153c-0.713-1.143-1.239-2.752-1.676-4.57 c2.173-15.01-2.089-28.05-14.667-37.647c-1.011-0.767-2.143-1.198-3.313-1.483c-0.363-0.305-0.716-0.599-1.097-0.984 c0.069,0.03,0.005-0.122-0.213-0.473c0-0.31-0.021-0.411-0.056-0.381c0.15-0.649,0.294-1.3,0.523-1.93 c0.005-0.025,1.831-2.858,2.435-3.712c1.688-2.382,2.034-5.271,1.503-8.049c0.502-2.741,0.145-5.605-1.503-7.992 c-4.633-6.713-3.722-12.426,0-19.484c5.33-10.101-4.271-19.321-12.776-18.377c-0.089-0.011-0.168-0.041-0.254-0.056 c-8.628-1.138-16.968-3.662-24.445-8.13c-0.536-0.315-1.062-0.508-1.587-0.747c-0.374-0.543-0.721-1.097-1.034-1.67 c-0.053-0.158-0.094-0.295-0.167-0.519c-0.061-0.284-0.104-0.472-0.145-0.655c-0.021-0.563-0.005-1.117,0.02-1.681 c0.041-0.152,0.12-0.503,0.224-1.046c31.115-24.313,44.48-57.731,36.909-96.791c0.015-0.49,0.066-0.947,0.025-1.468 C73.978,75.679,181.521,21.155,282.997,24.668c0.32,0.01,0.604-0.046,0.914-0.056c0.112,0.01,0.203,0.045,0.314,0.056 C380.565,33.347,447.838,127.304,434.112,221.092z", viewbox:"0 0 481.636 481.635", title:"తల"},{img:"ఇ", title:"ఇల"},{img:"ఈ", title:"ఈక"},{img:"ఉ", title:"ఉష"}], message: 'Hello Vue!',
+		    currentGradient: 1,
+		    image:true,
+		    title:"title",
+		    answer: false,
+		    el: {scale:1, x:0, y:0}
+	    }
+	  },
+	  computed: {
 	  	gradient: function() {
 	  		return "gradient"+this.currentGradient;
+	  	},
+	  	record: function() {
+	  		return this.words[this.currentGradient-1];
 	  	}
 	  },
 	  methods: {
@@ -47,11 +46,46 @@ export default {
 	  		this.answer=false;
 	  		this.currentGradient = this.currentGradient+dir;
 	  		this.title="title"+this.currentGradient;
-	  	}
+	  	},
+	  	onDragged: function(obj) {
+	  		if(obj.first)
+	  			this.el.scale=0.6;
+	  		if(obj.offsetX)
+	  			this.el.x = obj.offsetX;
+	  		if(obj.offsetY)
+	  			this.el.y = obj.offsetY;
+	  		if(obj.last) {
+
+	  			if(obj.clientY > window.innerHeight*.8)
+	  				this.answer=true;
+	  			else if(obj.clientY < window.innerHeight*.2)
+	  				this.answer=true;
+  				this.el.x = this.el.y = 0;
+  				this.el.scale = 1;
+	  				// circle1.tune({ x: 200, y: 200 }).replay();
+	  				// circle2.tune({ x: 200, y: 200 }).replay();
+	  		}
+	  	},
+	  	log: function() {
+	  		console.log(arguments);
+	  	},
+	  	// tune: function(e) {
+	  	// 	debugger;
+	   //    circle1
+	   //      .tune({ x: e.pageX, y: e.pageY })
+	   //      .replay();
+
+	   //    circle2
+	   //      .tune({ x: e.pageX, y: e.pageY })
+	   //      .replay();
+	   //  }
+	  },
+	  mounted() {
 	  }
 
-}
+	}
 </script>
+
 <style>
 	*{margin:0;padding:0;box-sizing:border-box;}
 	#app{width:100vw;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;}
@@ -63,7 +97,7 @@ export default {
 	.arrowtop,.arrowbottom{text-align:center;background:transparent;opacity:0.5;}
 	.arrowtop::after{content:"\2191";font-size:2rem;}
 	.arrowbottom::after{content:"\2193";font-size:2rem;}
-	#main{flex-grow:1;color:#fff;font-size:4rem;display:flex;flex-direction:column;justify-content:center;align-items:center;}
+	#main{flex-grow:1;color:#fff;font-size:6rem;display:flex;flex-direction:column;justify-content:center;align-items:center;}
 	.fade-enter-active,.fade-leave-active{transition:opacity .5s;}
 	.fade-enter,.fade-leave-to{opacity:0;}
 	.bounce-enter-active{animation:bounce-in .5s;}
@@ -73,10 +107,12 @@ export default {
 		50%{transform:scale(1.5);opacity:0.5;}
 		100%{transform:scale(1);opacity:1;}
 	}
-	.circle{border-radius:50%;padding:32px;background:rgba(0,0,0,0.1);width:8rem;height:8rem;text-align:center;}
+	.circle{border-radius:50%;background:rgba(0,0,0,0.1);width:8rem;height:8rem;text-align:center; line-height: 7rem;}
 	.white{background:rgba(255,255,255,1);color:black;}
 	#question,#answer{position:absolute;}
+	#question {width: 50vw; height: 50vw;}
 	.center{text-align:center;}
 	.small{font-size:2rem;color:rgba(255,255,255,0.6);padding-top:16px;}
+	svg path {stroke: 5px solid #fff;}
 
 </style>
