@@ -38,14 +38,13 @@ export default {
   name: 'App',
   data: function () {
     return {
-    	// station:{},
-    	// player:{},
+    	player:null,
     	isPlaying:true,
     	cnStation:0,
    		page: 'main',
    		categories: [
-   			{name:"All India Radio",url:"https://keep.google.com/u/0/#NOTE/161fe9c24fb.96487953e3cf868c"},
-   			{name:"FM",url:""},
+   			{name:"All India Radio",url:"http://airtelugu-lh.akamaihd.net/i/airtelugu_1@507818/index_1_a-b.m3u8?sd=10&rebase=on"},
+   			{name:"Vividh Bharati",url:"https://vividhbharati-lh.akamaihd.net/i/vividhbharati_1@507811/master.m3u8"},
    		]
     }
   },
@@ -57,11 +56,13 @@ export default {
   methods: {
   	showPlayer: function(index) {
   		this.page='player';
-  		if(index>=0)
+  		if(index>=0) {
   			this.cnStation = index;
- 		// this.player = document.getElementById("audioplayer");
- 		debugger;
- 		// this.player.play();
+        this.player.setStream(this.station.url);
+        if(!this.isPlaying)
+          this.player.playPause();
+      }
+
   	},
   	showMain: function() {
   		this.page="main";
@@ -78,10 +79,34 @@ export default {
   	},
   	play: function() {
   		this.isPlaying=true;
+      this.player.playPause();
   	},
   	pause: function() {
   		this.isPlaying = false;
+      this.player.playPause();
   	}
+  },
+  mounted() {
+    this.player = window.ExoPlayer;
+    this.player.show({
+        url: '',
+        userAgent: 'MyAwesomePlayer', // default is 'ExoPlayerPlugin'
+        aspectRatio: 'FILL_SCREEN', // default is FIT_SCREEN
+        autoPlay: true, // When set to false stream will not automatically start
+        audioOnly: true, // Only play audio in the backgroud, default is false.
+        controller: { // If this object is not present controller will not be visible
+          hideProgress: true, // Hide entire progress timebar
+          hidePosition: true, // If timebar is visible hide current position from it
+          hideDuration: true, // If timebar is visible Hide stream duration from it
+          controlIcons: {
+            'exo_rew': 'http://url.to/rew.png',
+            'exo_play': 'http://url.to/play.png',
+            'exo_pause': 'http://url.to/pause.png',
+            'exo_ffwd': 'http://url.to/ffwd.png'
+          }
+        }
+      })
+    this.player.playPause();
   }
 }
 </script>
