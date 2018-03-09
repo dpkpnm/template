@@ -101,11 +101,11 @@ export default {
         audioOnly: true,
         connectTimeout: 5000,
       })
-    window.setTimeout(function() {
-    		this.player.getState(function(json) {
-   				that.log+=JSON.stringify(json);
+    window.setInterval(function() {
+    		that.player.getState(function(json) {
+   				that.log=JSON.stringify(json)+that.log;
    			}, function() {
-   				that.log+=JSON.stringify(arguments);
+   				that.log=JSON.stringify(arguments)+that.log;
    			})	
     },2000);
    	
