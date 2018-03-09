@@ -57,8 +57,40 @@ export default {
   	}
   },
   methods: {
+  	createTrack: function() {
+  		var that = this;
+  		window.MusicControls.destroy();
+  		window.MusicControls.create({
+	    	track:this.station.name,
+	    	isPlaying:true,
+	    	dismissable : true,
+				hasPrev   : true,
+				hasNext   : true,
+				hasClose  : true});
+  		window.MusicControls.listen(function(events) {
+	    	var obj = JSON.parse(events);
+	    	switch(obj.message) {
+	    		case "music-controls-next":
+	    			that.changeStation(1);
+	    			break;
+	    		case "music-controls-prev":
+	    			that.changeStation(-1);
+	    			break;
+	    		case "music-controls-pause":
+	    			that.pause();
+	    			break;
+	    		case "music-controls-play":
+	    			that.play();
+	    			break;
+	    		case "music-controls-destroy":
+	    			 navigator.app.exitApp();
+	    			break;
+	    	}
+	    })
+  	},
   	showPlayer: function(index) {
   		this.page='player';
+  		this.createTrack();
   		if(index>=0) {
   			this.cnStation = index;
         this.player.setStream(this.station.url);
@@ -111,7 +143,6 @@ export default {
  				that.log=JSON.stringify(arguments)+that.log;
  			})	
     },2000);
-   	
   }
 }
 </script>
