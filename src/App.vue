@@ -22,7 +22,7 @@
 		</footer>
 	  </div>
 	  <div v-if="page=='settings'" class="gradient3 settings">
-	  	Settings
+	  	<div>{{log}}</div>
 	  	<div @click="showPlayer()" class="close material-icons">close</div>
 	  </div>
 	</div>
@@ -43,6 +43,7 @@ export default {
     	cnStation:0,
    		page: 'main',
    		gradient:"gradient1",
+   		log:"",
    		categories: [
    			{name:"All India Radio",url:"http://airtelugu-lh.akamaihd.net/i/airtelugu_1@507818/index_1_a-b.m3u8?sd=10&rebase=on"},
    			{name:"Vividh Bharati",url:"https://vividhbharati-lh.akamaihd.net/i/vividhbharati_1@507811/master.m3u8"},
@@ -91,6 +92,7 @@ export default {
   	}
   },
   mounted() {
+  	var that = this;
     this.player = window.ExoPlayer;
     this.player.show({
         url: '',
@@ -98,19 +100,15 @@ export default {
         autoPlay: false,
         audioOnly: true,
         connectTimeout: 5000,
-        // controller: {
-        //   hideProgress: true, // Hide entire progress timebar
-        //   hidePosition: true, // If timebar is visible hide current position from it
-        //   hideDuration: true, // If timebar is visible Hide stream duration from it
-        //   controlIcons: {
-        //     'exo_rew': 'http://url.to/rew.png',
-        //     'exo_play': 'http://url.to/play.png',
-        //     'exo_pause': 'http://url.to/pause.png',
-        //     'exo_ffwd': 'http://url.to/ffwd.png'
-        //   }
-        // }
       })
-    this.player.playPause();
+    window.setTimeout(function() {
+    		this.player.getState(function(json) {
+   				that.log+=JSON.stringify(json);
+   			}, function() {
+   				that.log+=JSON.stringify(arguments);
+   			})	
+    },2000);
+   	
   }
 }
 </script>
@@ -134,4 +132,5 @@ export default {
 	.player {height: 100vh; display: flex; align-items: center; justify-content: center; font-size: 2rem;}
 	.playpause {font-size: 6rem; margin-top: 10rem; text-align: center;}
 	#audioplayer {display: none;}
+	.settings {font-size: 0.8rem; word-wrap: break-word; padding: 48px 16px;}
 </style>
