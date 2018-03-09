@@ -38,6 +38,7 @@ export default {
   name: 'App',
   data: function () {
     return {
+    	playerState:{},
     	player:null,
     	isPlaying:true,
     	cnStation:0,
@@ -102,11 +103,13 @@ export default {
         connectTimeout: 5000,
       })
     window.setInterval(function() {
-    		that.player.getState(function(json) {
-   				that.log=JSON.stringify(json)+that.log;
-   			}, function() {
-   				that.log=JSON.stringify(arguments)+that.log;
-   			})	
+  		that.player.getState(function(json) {
+  			if(that.playerState.playbackState != json.playbackState)
+  				that.log=json.playbackState+that.log;
+  			that.playerState = json;
+ 			}, function() {
+ 				that.log=JSON.stringify(arguments)+that.log;
+ 			})	
     },2000);
    	
   }
