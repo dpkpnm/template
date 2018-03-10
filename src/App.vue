@@ -67,6 +67,7 @@ export default {
 				hasPrev   : true,
 				hasNext   : true,
 				hasClose  : true});
+  		window.MusicControls.subscribe();
   		window.MusicControls.listen(function(events) {
 	    	var obj = JSON.parse(events);
 	    	switch(obj.message) {
